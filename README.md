@@ -1,4 +1,4 @@
-# Startup Page
+# <img src="icons/icon128.png" width="32" valign="bottom" alt=""> Startup Page
 
 A minimal Chrome extension that opens a URL of your choice when Chrome starts, and replaces the new-tab page with a redirect to the same URL.
 
@@ -51,6 +51,7 @@ Your saved URL is stored separately by Chrome (in its own profile dir, keyed by 
 - `newtab.html` / `newtab.js` — new-tab override; redirects to the saved URL.
 - `options.html` / `options.js` — settings UI; reads/writes `chrome.storage.local`.
 - `config.js` — `DEFAULT_STARTUP_URL` + shared `getStartupUrl()` helper used by background and newtab.
+- `icons/` — extension icons (16/32/48/128 px PNGs).
 
 ## Develop
 

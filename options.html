@@ -1,21 +1,154 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>Startup Page — Options</title>
+<link rel="icon" href="icons/icon48.png">
 <style>
-  body { font: 14px system-ui, sans-serif; padding: 24px; max-width: 560px; }
-  h1 { font-size: 18px; margin: 0 0 16px; }
-  label { display: block; margin-bottom: 6px; font-weight: 600; }
-  input[type=url] { width: 100%; padding: 8px; font-size: 14px; box-sizing: border-box; }
-  button { margin-top: 12px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
-  #status { margin-top: 12px; color: #2a7; min-height: 1.2em; }
-  .hint { color: #666; font-size: 12px; margin-top: 6px; }
+  :root {
+    --bg: #f4f7f5;
+    --card: #ffffff;
+    --border: #e4e8e5;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --primary: #16a34a;
+    --primary-hover: #15803d;
+    --success-fg: #166534;
+    --focus-ring: rgba(22, 163, 74, 0.25);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1411;
+      --card: #1a201c;
+      --border: #2a312d;
+      --text: #f3f4f3;
+      --muted: #9ca3a4;
+      --success-fg: #86efac;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font: 14px/1.5 system-ui, -apple-system, Segoe UI, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 56px 24px;
+  }
+  .card {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+  .header img {
+    width: 36px;
+    height: 36px;
+    border-radius: 7px;
+  }
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+  }
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  input[type=url] {
+    width: 100%;
+    padding: 10px 12px;
+    font: inherit;
+    color: var(--text);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input[type=url]:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+  }
+  button {
+    padding: 9px 18px;
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--primary);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  button:hover { background: var(--primary-hover); }
+  button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+  #status {
+    font-size: 13px;
+    color: var(--muted);
+    min-height: 1.5em;
+  }
+  #status.success { color: var(--success-fg); font-weight: 600; }
+  .about {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .about a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  .about a:hover { text-decoration: underline; }
 </style>
 <body>
-  <h1>Startup Page</h1>
-  <label for="url">Startup URL</label>
-  <input id="url" type="url" placeholder="https://example.com/" required>
-  <div class="hint">Saved locally on this machine. Settings persist across Chrome restarts and extension reloads.</div>
-  <button id="save">Save</button>
-  <div id="status"></div>
+  <main class="card">
+    <div class="header">
+      <img src="icons/icon128.png" alt="">
+      <h1>Startup Page</h1>
+    </div>
+    <label for="url">Startup URL</label>
+    <input id="url" type="url" placeholder="https://example.com/" required>
+    <div class="hint">Saved locally on this machine. Settings persist across Chrome restarts and extension reloads.</div>
+    <div class="actions">
+      <button id="save">Save</button>
+      <div id="status"></div>
+    </div>
+    <footer class="about">
+      <a href="https://github.com/FrenchCommando/startup-extension" target="_blank" rel="noopener">GitHub</a>
+      <span>·</span>
+      <span id="version"></span>
+    </footer>
+  </main>
   <script src="options.js"></script>
 </body>

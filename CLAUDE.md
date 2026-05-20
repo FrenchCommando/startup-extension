@@ -6,8 +6,8 @@ Tiny Manifest V3 Chrome extension distributed via GitHub Releases (not the Chrom
 
 No build step, no dependencies. Files:
 
-- `manifest.json` — MV3. Declares the service worker, `newtab` override, `options_ui` (open in tab), and the `storage` permission.
-- `background.js` — listens for `chrome.runtime.onStartup`, awaits `getStartupUrl()`, opens it via `chrome.tabs.create`.
+- `manifest.json` — MV3. Declares the service worker, `newtab` override, `options_ui` (open in tab), the toolbar `action` (no popup, click handler opens Options), `icons`, and the `storage` permission.
+- `background.js` — listens for `chrome.runtime.onStartup` (opens saved URL via `chrome.tabs.create`) and `chrome.action.onClicked` (opens the Options page via `chrome.runtime.openOptionsPage()`). The action handler is what keeps the toolbar icon colored — without it, Chrome greys out unpinned/no-action extensions.
 - `newtab.html` / `newtab.js` — loads `config.js`, then `window.location.replace(await getStartupUrl())`.
 - `options.html` / `options.js` — input + Save button. Reads/writes `chrome.storage.local` key `startupUrl`.
 - `config.js` — shared. Defines `DEFAULT_STARTUP_URL` and `async function getStartupUrl()`. Used by both the service worker (via `importScripts`) and the HTML pages (via `<script src>`).
