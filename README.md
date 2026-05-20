@@ -6,7 +6,7 @@ No build step. No dependencies. ~80 lines of code total. Manifest V3.
 
 ## Install
 
-1. **Download the latest release zip** from the [Releases page](https://github.com/FrenchCommando/startup-extension/releases).
+1. **Download `startup-extension-<version>.zip`** (not "Source code") from the [Releases page](https://github.com/FrenchCommando/startup-extension/releases).
 2. **Extract it to a permanent folder** (see warning below).
 3. Open `chrome://extensions` in Chrome.
 4. Toggle **Developer mode** on (top right).

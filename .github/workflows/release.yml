@@ -29,4 +29,3 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: dist/startup-extension-${{ github.ref_name }}.zip
-          generate_release_notes: true
