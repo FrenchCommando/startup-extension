@@ -1,0 +1,21 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Startup Page — Options</title>
+<style>
+  body { font: 14px system-ui, sans-serif; padding: 24px; max-width: 560px; }
+  h1 { font-size: 18px; margin: 0 0 16px; }
+  label { display: block; margin-bottom: 6px; font-weight: 600; }
+  input[type=url] { width: 100%; padding: 8px; font-size: 14px; box-sizing: border-box; }
+  button { margin-top: 12px; padding: 8px 16px; font-size: 14px; cursor: pointer; }
+  #status { margin-top: 12px; color: #2a7; min-height: 1.2em; }
+  .hint { color: #666; font-size: 12px; margin-top: 6px; }
+</style>
+<body>
+  <h1>Startup Page</h1>
+  <label for="url">Startup URL</label>
+  <input id="url" type="url" placeholder="https://example.com/" required>
+  <div class="hint">Saved locally on this machine. Settings persist across Chrome restarts and extension reloads.</div>
+  <button id="save">Save</button>
+  <div id="status"></div>
+  <script src="options.js"></script>
+</body>

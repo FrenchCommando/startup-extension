@@ -1,0 +1,32 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create zip
+        run: |
+          mkdir -p dist
+          zip -r "dist/startup-extension-${GITHUB_REF_NAME}.zip" . \
+            -x '.git/*' \
+            -x '.github/*' \
+            -x '.gitignore' \
+            -x 'BRAINSTORM.md' \
+            -x 'CLAUDE.md' \
+            -x 'dist/*'
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/startup-extension-${{ github.ref_name }}.zip
+          generate_release_notes: true

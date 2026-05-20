@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Startup Page",
+  "version": "0.3.0",
+  "description": "Opens a custom page when Chrome starts and replaces the new-tab page with the same URL.",
+  "permissions": ["storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  }
+}
