@@ -1,16 +1,16 @@
 # Project: startup-extension
 
-Tiny Manifest V3 Chrome extension distributed via GitHub Releases (not the Chrome Web Store). Two jobs: open a URL on Chrome startup, and override the new-tab page to redirect to the same URL. URL is user-configurable via an Options page and stored in `chrome.storage.local`.
+Tiny Manifest V3 Chrome extension distributed via GitHub Releases (not the Chrome Web Store). Does one thing: override the new-tab page to redirect to a configurable URL. When Chrome's startup mode is "Open the New Tab page", the launch tab routes through that override — so the extension effectively controls what shows on launch under that mode (Chrome surfaces this as *"Startup Page is controlling this setting"* on `chrome://settings/onStartup`). Under other startup modes, the override only fires on Ctrl+T. There is no separate `onStartup` code path inside the extension; the launch-tab behavior is entirely a side effect of the new-tab override + Chrome's startup-mode resolution. URL is user-configurable via an Options page and stored in `chrome.storage.local`.
 
 ## Architecture
 
 No build step, no dependencies. Files:
 
 - `manifest.json` — MV3. Declares the service worker, `newtab` override, `options_ui` (open in tab), the toolbar `action` (no popup, click handler opens Options), `icons`, and the `storage` permission.
-- `background.js` — listens for `chrome.runtime.onStartup` (opens saved URL via `chrome.tabs.create`) and `chrome.action.onClicked` (opens the Options page via `chrome.runtime.openOptionsPage()`). The action handler is what keeps the toolbar icon colored — without it, Chrome greys out unpinned/no-action extensions.
+- `background.js` — listens for `chrome.action.onClicked` and opens the Options page via `chrome.runtime.openOptionsPage()`. The action handler is what keeps the toolbar icon colored — without it, Chrome greys out unpinned/no-action extensions. There is intentionally no `chrome.runtime.onStartup` handler: with Chrome's "Open the New Tab page" startup mode, Chrome already opens a new tab on launch, which the `newtab` override redirects to the saved URL. Adding an `onStartup` `chrome.tabs.create` would duplicate that and produce two tabs. Users on "Continue where you left off" or "Open a specific page" startup modes will not get the URL on launch — only via Ctrl+T.
 - `newtab.html` / `newtab.js` — loads `config.js`, then `window.location.replace(await getStartupUrl())`.
 - `options.html` / `options.js` — input + Save button. Reads/writes `chrome.storage.local` key `startupUrl`.
-- `config.js` — shared. Defines `DEFAULT_STARTUP_URL` and `async function getStartupUrl()`. Used by both the service worker (via `importScripts`) and the HTML pages (via `<script src>`).
+- `config.js` — defines `DEFAULT_STARTUP_URL` and `async function getStartupUrl()`. Loaded by `newtab.html` (via `<script src>`). The service worker no longer loads it (the `onStartup` handler was removed), and `options.js` reads `chrome.storage.local` directly — so config.js is currently single-consumer. The form (`var` + top-level `async function`) is kept dual-compatible with service-worker `importScripts` in case a service-worker consumer is reintroduced.
 
 ## Distribution model
 
@@ -29,7 +29,7 @@ This shapes several design choices:
 ## Conventions
 
 - Stay dependency-free and build-free. The whole point is `Load unpacked` just works.
-- `config.js` uses `var` and a top-level `async function` on purpose — both forms work in a service-worker `importScripts` context and in an HTML `<script src>` context. Don't change to `const`/`export` without testing both paths.
+- `config.js` uses `var` and a top-level `async function` on purpose — both forms work in a service-worker `importScripts` context and in an HTML `<script src>` context. Only the HTML path is currently exercised, but keep it dual-compatible: a future service-worker consumer (e.g. re-adding an `onStartup` handler) should not need to refactor `config.js`. Don't change to `const`/`export` without testing both paths.
 - All user-tunable config goes through `chrome.storage.local` + the Options page. Do not add new hardcoded URLs in `background.js` or `newtab.html`.
 - Keep HTML and JS in separate files (per repo style), even when the JS is one line.
 
@@ -64,4 +64,4 @@ Manual only — no test framework, and there shouldn't be one for something this
 
 - Reload the extension on `chrome://extensions` after any edit. The Options page and new-tab override pick up changes on reload; the service worker may need a "service worker" restart link click on the extension card.
 - New-tab override: open a new tab. A brief "Redirecting…" title flash is expected (async storage read before redirect).
-- Startup behavior: requires a full Chrome restart (close all windows).
+- Launch behavior: only fires with Chrome's startup mode set to "Open the New Tab page". Requires a full Chrome restart (close all windows). Under that mode, Chrome routes the launch tab through the new-tab override — there's no separate `onStartup` listener inside the extension, but Chrome (correctly) attributes control of the launch page to the extension.

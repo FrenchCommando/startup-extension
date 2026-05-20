@@ -1,8 +1,10 @@
 # <img src="icons/icon128.png" width="32" valign="bottom" alt=""> Startup Page
 
-A minimal Chrome extension that opens a URL of your choice when Chrome starts, and replaces the new-tab page with a redirect to the same URL.
+A minimal Chrome extension that overrides the new-tab page with a redirect to a URL of your choice.
 
-No build step. No dependencies. ~80 lines of code total. Manifest V3.
+If your Chrome startup mode is set to **"Open the New Tab page"** (`chrome://settings/onStartup`), the same redirect fires on launch — Chrome routes the launch tab through the new-tab override, and displays *"Startup Page is controlling this setting"* next to that option. Under other startup modes, the URL only appears when you press Ctrl+T.
+
+No build step. No dependencies. ~35 lines of JavaScript across four files. Manifest V3.
 
 ## Install
 
@@ -12,7 +14,7 @@ No build step. No dependencies. ~80 lines of code total. Manifest V3.
 4. Toggle **Developer mode** on (top right).
 5. Click **Load unpacked** and select the extracted folder.
 6. Right-click the extension on `chrome://extensions` → **Options**. Set your URL. Click **Save**.
-7. Restart Chrome to verify the startup tab. Open a new tab to verify the new-tab override.
+7. Open a new tab to verify the redirect. If you also want the URL on Chrome launch, set `chrome://settings/onStartup` to **"Open the New Tab page"**, then restart Chrome.
 
 ### Choose the extraction folder carefully
 
@@ -39,6 +41,7 @@ Your saved URL is stored separately by Chrome (in its own profile dir, keyed by 
 
 ## What this doesn't do (honest limitations)
 
+- **Launch behavior depends on your Chrome startup mode.** The extension overrides the new-tab page, so it fires on launch only when Chrome's startup mode is "Open the New Tab page" (`chrome://settings/onStartup`). Other modes ("Continue where you left off", "Open a specific page") bypass the new-tab page on launch — the URL then only appears when you press Ctrl+T.
 - **Doesn't sync the URL across your machines.** Each install has its own local storage. Set the URL on each machine separately. (Cross-device sync would require publishing to the Chrome Web Store; see below.)
 - **Doesn't work on mobile Chrome.** Chrome on Android/iOS does not support extensions at all — this is a Google limitation, nothing to do with this code.
 - **Chrome may show a "Disable developer mode extensions" prompt** on launch. This is Chrome's safety nag for unpacked installs. Dismiss it; it's harmless.
@@ -47,10 +50,10 @@ Your saved URL is stored separately by Chrome (in its own profile dir, keyed by 
 ## Files
 
 - `manifest.json` — MV3 manifest. Declares the service worker, new-tab override, options page, and `storage` permission.
-- `background.js` — service worker; opens the saved URL on `chrome.runtime.onStartup`.
+- `background.js` — service worker; opens the Options page when the toolbar icon is clicked.
 - `newtab.html` / `newtab.js` — new-tab override; redirects to the saved URL.
 - `options.html` / `options.js` — settings UI; reads/writes `chrome.storage.local`.
-- `config.js` — `DEFAULT_STARTUP_URL` + shared `getStartupUrl()` helper used by background and newtab.
+- `config.js` — `DEFAULT_STARTUP_URL` + `getStartupUrl()` helper. Loaded by `newtab.html`.
 - `icons/` — extension icons (16/32/48/128 px PNGs).
 
 ## Develop
