@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Startup Page",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Open a custom page on Chrome startup and override the new-tab page. github.com/FrenchCommando/startup-extension",
   "icons": {
     "16": "icons/icon16.png",
